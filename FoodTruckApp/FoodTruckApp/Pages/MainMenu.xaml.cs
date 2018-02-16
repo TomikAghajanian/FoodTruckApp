@@ -1,33 +1,36 @@
 ﻿
+using FoodTruckApp.Droid;
 using FoodTruckApp.Models;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
 namespace FoodTruckApp.Pages
 {
     public partial class MainMenu : MasterDetailPage
     {
-        public List<MainMenuItem> MainMenuItems { get; set; }
+        public ObservableCollection<MainMenuItem> MainMenuItems { get; set; }
 
         public MainMenu()
         {
-
             // Set the binding context to this code behind.
             BindingContext = this;
 
-            // Build the Menu
-            MainMenuItems = new List<MainMenuItem>()
-            {
-                new MainMenuItem() { Title = "Page One", Icon = "menu_inbox.png", TargetType = typeof(PageOne) },
-                new MainMenuItem() { Title = "Page Two", Icon = "menu_stock.png", TargetType = typeof(PageTwo) }
-            };
+            MainMenuItems = new ObservableCollection<MainMenuItem>();
 
+            // Build the Menu
+            MessagingCenter.Subscribe<string>(this, "update", (sender) =>
+            {
+                MainMenuItem mainMenuItem = new MainMenuItem() { Title = sender, Icon = "menu_inbox.png", TargetType = typeof(PageOne) };
+                MainMenuItems.Add(mainMenuItem);
+            });
 
             Detail = new NavigationPage(new MapPage());
 
             InitializeComponent();
         }
-       
+
+
 
         // When a MenuItem is selected.
         public void MainMenuItem_Selected(object sender, SelectedItemChangedEventArgs e)

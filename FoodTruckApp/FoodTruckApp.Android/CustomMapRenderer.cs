@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using Android.Content;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
+using Android.Graphics;
+using Android.Views;
 using Android.Widget;
 using FoodTruckApp.Droid;
 using FoodTruckApp.Maps;
+using FoodTruckApp.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.Android;
+using Xamarin.Forms.Platform.Android;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace FoodTruckApp.Droid
 {
+#pragma warning disable CS0618 // Type or member is obsolete
     public class CustomMapRenderer : MapRenderer, GoogleMap.IInfoWindowAdapter
     {
         List<CustomPin> customPins;
@@ -59,7 +64,7 @@ namespace FoodTruckApp.Droid
             {
                 throw new Exception("Custom pin not found");
             }
-            
+
         }
 
         public Android.Views.View GetInfoContents(Marker marker)
@@ -78,7 +83,7 @@ namespace FoodTruckApp.Droid
                 if (customPin.Id == "Xamarin")
                 {
                     view = inflater.Inflate(Resource.Layout.XamarinMapInfoWindow, null);
-                    
+
                 }
                 else
                 {
@@ -88,7 +93,7 @@ namespace FoodTruckApp.Droid
 
                 var infoTitle = view.FindViewById<TextView>(Resource.Id.InfoWindowTitle);
                 var infoSubtitle = view.FindViewById<TextView>(Resource.Id.InfoWindowSubtitle);
-                
+
 
                 if (infoTitle != null)
                 {
@@ -98,6 +103,9 @@ namespace FoodTruckApp.Droid
                 {
                     infoSubtitle.Text = marker.Snippet;
                 }
+
+                MessagingCenter.Send(marker.Title, "update");
+
                 return view;
             }
             return null;
@@ -120,6 +128,7 @@ namespace FoodTruckApp.Droid
             }
             return null;
         }
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 }
 
